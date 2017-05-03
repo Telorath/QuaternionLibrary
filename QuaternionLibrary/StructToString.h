@@ -34,7 +34,7 @@ namespace QuaternionLibrary
 		{
 			for (size_t j = 0; j < 4; j++)
 			{
-				out << Matrix.Array2D[j][i] << " ";
+				out << Matrix.Array2D[i][j] << " ";
 			}
 			out << "\n";
 		}
