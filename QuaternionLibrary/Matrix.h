@@ -17,6 +17,19 @@ namespace QuaternionLibrary
 				numtype W;
 			};
 		};
+		Row()
+		{
+
+		}
+		Row(numtype _X, numtype _Y, numtype _Z, numtype _W):
+		X(_X), Y(_Y), Z(_Z), W(_W)
+		{
+
+		}
+		Row(Row const & _Other) : X(_Other.X), Y(_Other.Y), Z(_Other.Z), W(_Other.W)
+		{
+
+		};
 		inline void ApplyToMatrix(Matrix4x4<numtype>& Matrix, int RowNumber)
 		{
 			for (size_t i = 0; i < 4; i++)
@@ -38,6 +51,10 @@ namespace QuaternionLibrary
 				numtype W;
 			};
 		};
+		Column()
+		{
+
+		}
 		inline void ApplyToMatrix(Matrix4x4<numtype>& Matrix, int ColumnNumber)
 		{
 			for (size_t i = 0; i < 4; i++)
@@ -58,6 +75,9 @@ namespace QuaternionLibrary
 	{
 		Row<numtype> mRow;
 		Column<numtype> mColumn;
+
+		RowColumn() {}
+
 	};
 
 	template <typename numtype> numtype operator*(Row<numtype> const & _Row, Column<numtype> const & _Column)
@@ -118,6 +138,25 @@ namespace QuaternionLibrary
 				numtype _2_3;
 				numtype _3_3;
 			};
+		};
+
+		Matrix4x4()
+		{
+
+		}
+		Matrix4x4(Row<numtype> const & _X, Row<numtype> const & _Y, Row<numtype> const & _Z, Row<numtype> const & _W) :
+			RowX(_X), RowY(_Y), RowZ(_Z), RowW(_W)
+		{
+			
+		};
+		Matrix4x4(Matrix4x4 const & _Other) : RowX(_Other.RowX), RowY(_Other.RowY), RowZ(_Other.RowZ), RowW(_Other.RowW)
+		{
+
+		};
+
+		static Matrix4x4 Identity()
+		{
+			return Matrix4x4(Row<numtype>(1, 0, 0, 0), Row<numtype>(0, 1, 0, 0), Row<numtype>(0, 0, 1, 0), Row<numtype>(0, 0, 0, 1));
 		};
 
 		Column<numtype> GetXColumn() const
