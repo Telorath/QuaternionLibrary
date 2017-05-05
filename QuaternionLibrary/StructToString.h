@@ -3,6 +3,7 @@
 #include <sstream>
 #include "Quaternion.h"
 #include "Matrix.h"
+#include "Vector.h"
 namespace QuaternionLibrary
 {
 	template <typename numtype> std::string QuaternionToString(Quaternion<numtype> Quat)
@@ -38,6 +39,24 @@ namespace QuaternionLibrary
 			}
 			out << "\n";
 		}
+
+		return out.str();
+	}
+
+	template <typename numtype> std::string VectorToString(Vector3<numtype> Vec)
+	{
+
+		std::stringstream out;
+
+		out << "(";
+
+		out << Vec.X;
+		out << ", ";
+		out << Vec.Y;
+		out << ", ";
+		out << Vec.Z;
+
+		out << ")";
 
 		return out.str();
 	}

@@ -134,10 +134,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="Fraction.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="StructToString.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
