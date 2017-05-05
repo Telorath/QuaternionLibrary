@@ -26,7 +26,7 @@ namespace QuaternionLibrary
 		{
 
 		}
-		Row(Row const & _Other) : X(_Other.X), Y(_Other.Y), Z(_Other.Z), W(_Other.W)
+		Row(const Row & _Other) : X(_Other.X), Y(_Other.Y), Z(_Other.Z), W(_Other.W)
 		{
 
 		};
@@ -144,12 +144,12 @@ namespace QuaternionLibrary
 		{
 
 		}
-		Matrix4x4(Row<numtype> const & _X, Row<numtype> const & _Y, Row<numtype> const & _Z, Row<numtype> const & _W) :
+		Matrix4x4(const Row<numtype> & _X, const Row<numtype> & _Y, const Row<numtype> & _Z, const Row<numtype> & _W) :
 			RowX(_X), RowY(_Y), RowZ(_Z), RowW(_W)
 		{
 			
 		};
-		Matrix4x4(Matrix4x4 const & _Other) : RowX(_Other.RowX), RowY(_Other.RowY), RowZ(_Other.RowZ), RowW(_Other.RowW)
+		Matrix4x4(const Matrix4x4 & _Other) : RowX(_Other.RowX), RowY(_Other.RowY), RowZ(_Other.RowZ), RowW(_Other.RowW)
 		{
 
 		};
@@ -189,8 +189,6 @@ namespace QuaternionLibrary
 
 		Matrix4x4& Transpose()
 		{
-			Matrix4x4 Out;
-
 			RowColumn<numtype> A;
 
 			RowColumn<numtype> B;
@@ -209,6 +207,15 @@ namespace QuaternionLibrary
 			C.mColumn.ApplyToMatrix(*this, 2);
 			D.mColumn.ApplyToMatrix(*this, 3);
 			return *this;
+		}
+
+		Matrix4x4 GetTranspose() const
+		{
+
+			Matrix4x4 Out(*this);
+			Out.Transpose();
+			return Out;
+
 		}
 
 		Matrix4x4 operator*(Matrix4x4 const & Other)
