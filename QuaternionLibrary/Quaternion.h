@@ -77,11 +77,15 @@ namespace QuaternionLibrary
 			return Out;
 		}
 
+		//29 Operations
 		Quaternion operator* (Quaternion const & other) const
 		{
 			Quaternion Out;
 
+			//7 Operations
 			Out.A = A * other.A - other.VectorPart.Dot(VectorPart);
+
+			//22 Operations
 
 			Out.VectorPart = other.A * VectorPart + A * other.VectorPart + other.VectorPart.Cross(VectorPart);
 
@@ -107,7 +111,7 @@ namespace QuaternionLibrary
 		{
 			for (size_t i = 0; i < 4; i++)
 			{
-				if (Array[i] < tinynumber)
+				if (abs(Array[i]) < tinynumber)
 				{
 					Array[i] = 0;
 				}
@@ -136,13 +140,9 @@ namespace QuaternionLibrary
 
 	template <typename numtype> Vector3<numtype> operator* (Vector3<numtype> const & Left, Quaternion<numtype> const & Right)
 	{
-		Vector3<numtype> Out;
 
-		Out = Left + 2 * Right.A * Right.VectorPart.Cross(Left) + 2 * (Right.VectorPart.Cross(Right.VectorPart.Cross(Left)));
+		return Right * Left;
 
-		Out.CheckNearlyZero();
-
-		return Out;
 	}
 
 

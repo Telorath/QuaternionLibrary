@@ -4,40 +4,6 @@ namespace QuaternionLibrary
 	template <typename numtype> struct Matrix4x4;
 
 #pragma region HelperStructs
-	template <typename numtype> struct Row
-	{
-		union
-		{
-			numtype Array[4];
-			struct
-			{
-				numtype X;
-				numtype Y;
-				numtype Z;
-				numtype W;
-			};
-		};
-		Row()
-		{
-
-		}
-		Row(numtype _X, numtype _Y, numtype _Z, numtype _W):
-		X(_X), Y(_Y), Z(_Z), W(_W)
-		{
-
-		}
-		Row(const Row & _Other) : X(_Other.X), Y(_Other.Y), Z(_Other.Z), W(_Other.W)
-		{
-
-		};
-		inline void ApplyToMatrix(Matrix4x4<numtype>& Matrix, int RowNumber)
-		{
-			for (size_t i = 0; i < 4; i++)
-			{
-				Matrix.Array2D[RowNumber][i] = Array[i];
-			}
-		}
-	};
 	template <typename numtype> struct Column
 	{
 		union
@@ -70,6 +36,56 @@ namespace QuaternionLibrary
 			}
 		}
 	};
+	template <typename numtype> struct Row
+	{
+		union
+		{
+			numtype Array[4];
+			struct
+			{
+				numtype X;
+				numtype Y;
+				numtype Z;
+				numtype W;
+			};
+		};
+
+
+		Row()
+		{
+
+		}
+		Row(numtype _X, numtype _Y, numtype _Z, numtype _W):
+		X(_X), Y(_Y), Z(_Z), W(_W)
+		{
+
+		}
+		Row(const Row & _Other) : X(_Other.X), Y(_Other.Y), Z(_Other.Z), W(_Other.W)
+		{
+
+		};
+		inline void ApplyToMatrix(Matrix4x4<numtype>& Matrix, int RowNumber)
+		{
+			for (size_t i = 0; i < 4; i++)
+			{
+				Matrix.Array2D[RowNumber][i] = Array[i];
+			}
+		}
+		//8 Operations
+		inline numtype operator*(Column<numtype> const & _Column)
+		{
+			numtype out;
+
+			out = 0;
+
+			for (size_t i = 0; i < 4; i++)
+			{
+				out += Array[i] * _Column.Array[i];
+			}
+
+			return out;
+		}
+	};
 
 	template <typename numtype> union RowColumn
 	{
@@ -79,20 +95,6 @@ namespace QuaternionLibrary
 		RowColumn() {}
 
 	};
-
-	template <typename numtype> numtype operator*(Row<numtype> const & _Row, Column<numtype> const & _Column)
-	{
-		numtype out;
-
-		out = 0;
-
-		for (size_t i = 0; i < 4; i++)
-		{
-			out += _Row.Array[i] * _Column.Array[i];
-		}
-
-		return out;
-	}
 
 #pragma endregion
 	template <typename numtype> struct Matrix4x4
@@ -217,6 +219,8 @@ namespace QuaternionLibrary
 			return Out;
 
 		}
+
+		//128 operations
 
 		Matrix4x4 operator*(Matrix4x4 const & Other)
 		{
