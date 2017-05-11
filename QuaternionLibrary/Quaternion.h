@@ -30,6 +30,11 @@ namespace QuaternionLibrary
 		};
 
 		Quaternion() : A(0), X(0), Y(0), Z(0) {  };
+
+		Quaternion(const Quaternion & Other) : A(Other.A), X(Other.X), Y(Other.Y), Z(Other.Z) { };
+
+		Quaternion& operator=(const Quaternion& Other) { A = Other.A; X = Other.X; Y = Other.Y; Z = Other.Z; return *this; };
+
 		Quaternion(numtype _A, numtype _X, numtype _Y, numtype _Z) : A(_A), X(_X), Y(_Y), Z(_Z) { };
 
 		Quaternion(numtype _A, Vector3<numtype> _Vector) :
@@ -43,7 +48,7 @@ namespace QuaternionLibrary
 			return Quaternion(1, 0, 0, 0);
 		}
 
-		static Quaternion GetRotationDegrees(numtype Degrees, Vector3<numtype> const & Axis)
+		static Quaternion GetRotationDegrees(numtype Degrees, const Vector3<numtype> & Axis)
 		{
 
 			//convert degrees to radians for our functions.
@@ -52,14 +57,51 @@ namespace QuaternionLibrary
 
 			numtype Radians = (numtype)(Degrees * 0.0174533);
 
+//			Radians *= 0.5;
+
+//			return Quaternion(cos(Radians), Axis * sin(Radians)).Normalize();
+		
+			return GetRotationRadians(Radians, Axis);
+
+		}
+
+		static Quaternion GetRotationRadians(numtype Radians, const Vector3<numtype> & Axis)
+		{
+
+			//convert degrees to radians for our functions.
+
+			//pi / 180 = ~0.0174533
+
+//numtype Radians = (numtype)(Degrees * 0.0174533);
+
 			Radians *= 0.5;
 
 			return Quaternion(cos(Radians), Axis * sin(Radians)).Normalize();
 
 		}
 
+		static Quaternion GetRotationBetweenVectors(const Vector3<numtype> & Start, const Vector3<numtype> & End)
+		{
+
+			Vector3<numtype> StartCopy = Start.GetNormalized();
+
+			Vector3<numtype> EndCopy = End.GetNormalized();;
+
+			Vector3<numtype> Axis = StartCopy.Cross(EndCopy).GetNormalized();
+
+			numtype Angle = StartCopy.Dot(EndCopy);
+
+			Angle = acos(Angle);
+
+			return GetRotationRadians(Angle, Axis);
+		}
+
 		Quaternion& Normalize()
 		{
+			if (SqrMagnitude() == 1)
+			{
+				return *this;
+			}
 			Fraction<double, double> Frac;
 			Frac.SetNumerator(1.0);
 			Frac.SetDenominator(Magnitude());
@@ -77,19 +119,78 @@ namespace QuaternionLibrary
 			return Out;
 		}
 
-		//29 Operations
-		Quaternion operator* (Quaternion const & other) const
-		{
-			Quaternion Out;
+#pragma region Mathematical Operators
 
+		Quaternion operator + (const Quaternion & other) const
+		{
+			Quaternion Out(*this);
+
+			Out += other;
+
+			return Out;
+		}
+
+		Quaternion& operator += (const Quaternion & other)
+		{
+			A += other.A;
+			X += other.X;
+			Y += other.Y;
+			Z += other.Z;
+			return *this;
+		}
+
+		Quaternion operator - (const Quaternion & other) const
+		{
+			Quaternion Out(*this);
+
+			Out -= other;
+
+			return Out;
+		}
+
+		Quaternion& operator -= (const Quaternion & other)
+		{
+			A -= other.A;
+			X -= other.X;
+			Y -= other.Y;
+			Z -= other.Z;
+			return *this;
+		}
+
+		//29 Operations
+		Quaternion operator* (const Quaternion & other) const
+		{
+			Quaternion Out(*this);
+
+			Out *= other;
+
+			return Out;
+		}
+
+		Quaternion& operator*=(const Quaternion & other)
+
+		{
 			//7 Operations
-			Out.A = A * other.A - other.VectorPart.Dot(VectorPart);
+			A = A * other.A - other.VectorPart.Dot(VectorPart);
 
 			//22 Operations
 
-			Out.VectorPart = other.A * VectorPart + A * other.VectorPart + other.VectorPart.Cross(VectorPart);
+			VectorPart = VectorPart.Cross(other.VectorPart) + A * other.VectorPart + other.A * VectorPart;
 
+			return *this;
+		}
+
+		Quaternion operator/ (const Quaternion & other) const
+		{
+			Quaternion Out(*this);
+			Out /= other;
 			return Out;
+		}
+
+		Quaternion& operator/= (const Quaternion & other)
+		{
+			operator*=(other.Conjugate());
+			return *this;
 		}
 
 		Vector3<numtype> operator* (Vector3<numtype> const & other) const
@@ -107,6 +208,8 @@ namespace QuaternionLibrary
 			return Out;
 		}
 
+#pragma endregion
+
 		void CheckNearlyZero()
 		{
 			for (size_t i = 0; i < 4; i++)
@@ -116,6 +219,18 @@ namespace QuaternionLibrary
 					Array[i] = 0;
 				}
 			}
+		}
+
+		Quaternion Conjugate() const
+		{
+			Quaternion Out;
+
+			Out.A = A;
+			Out.X = -X;
+			Out.Y = -Y;
+			Out.Z = -Z;
+
+			return Out;
 		}
 
 	private:
@@ -147,5 +262,5 @@ namespace QuaternionLibrary
 
 
 	typedef Quaternion<float> Quaternionf;
-	typedef Quaternion<float> Quaterniond;
+	typedef Quaternion<double> Quaterniond;
 }
